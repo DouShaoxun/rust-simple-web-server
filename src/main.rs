@@ -1,5 +1,4 @@
-use std::fmt::Debug;
-use std::fs;
+use std::{fs, thread};
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 
@@ -7,8 +6,10 @@ fn main() {
     let listener = TcpListener::bind("127.0.0.1:8564").unwrap();
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        println!("Connection established");
-        handle_connection(stream);
+        //  针对每一个连接建立一个线程
+        thread::spawn(|| {
+            handle_connection(stream);
+        });
     }
 }
 
